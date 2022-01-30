@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './index.css';
 import 'antd/dist/antd.min.css';
 import {StatisticsBlock} from "../../components/statistics-block";
