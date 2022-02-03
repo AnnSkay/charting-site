@@ -18,7 +18,7 @@ export function Dashboard({statisticsBlocks, barChartOptions, lineChartOptions, 
   });
 
   const dashboardClass = () => cn({
-    ['no-display']: !isShow
+    'no-display': !isShow
   });
 
   return (

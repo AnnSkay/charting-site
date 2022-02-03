@@ -76,7 +76,7 @@ export function Statistics({statisticsBlock, dataTable, isShow, currency}) {
   ];
 
   const statisticsClass = () => cn({
-    ['no-display']: !isShow
+    'no-display': !isShow
   });
 
   return (
