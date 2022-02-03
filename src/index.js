@@ -2,18 +2,46 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import 'antd/dist/antd.min.css';
+import cn from 'classnames';
 import {DatePicker} from 'antd';
 import {Layout, Select, Avatar, Badge} from 'antd';
 import {Option} from "antd/es/mentions";
 import {UserOutlined, CaretDownOutlined, DashboardOutlined, TableOutlined} from '@ant-design/icons';
 import {Dashboard} from './pages/dashboard';
+import {Statistics} from "./pages/statistics";
 import {PageTitle} from "./components/page-title";
 
 const {Header, Sider, Content} = Layout;
 const {RangePicker} = DatePicker;
 
 function MainPage() {
-  let statisticsBlocks = [
+  const [dashboardSelected, isDashboardSelected] = useState(true);
+  const [statisticsSelected, isStatisticsSelected] = useState(false);
+
+  const [pageTitle, setPageTitle] = useState('Good morning!');
+
+  const [currency, setCurrency] = useState('USD');
+
+  const generateTableData = () => {
+    let dataTableRandom = [];
+    for (let i = 0; i < 15; i++) {
+      let currentValue = Math.round(Math.random() * 49001 + 1000);
+      let previousValue = Math.round(Math.random() * 49001 + 1000);
+      let dataRow = {};
+      dataRow.key = i + 1;
+      dataRow.name = `Row ${i + 1}`;
+      dataRow.value = currentValue;
+      dataRow.prevValue = previousValue;
+
+      dataTableRandom.push(dataRow);
+    }
+
+    return dataTableRandom;
+  }
+
+  const [dataTable, setDataTable] = useState(generateTableData());
+
+  const [statisticsBlocks, setStatisticsBlocks] = useState([
     {
       title: 'Water',
       currentValue: 20567,
@@ -34,7 +62,7 @@ function MainPage() {
       currentValue: 567,
       previousValue: 544
     }
-  ];
+  ]);
 
   let countriesBarChart = [
     {
@@ -55,9 +83,43 @@ function MainPage() {
     }
   ];
 
-  countriesBarChart.sort((prev, next) => next.value - prev.value);
+  let dataLineChart = [
+    [
+      [Date.UTC(2022, 2, 2, 12, 0), 934],
+      [Date.UTC(2022, 2, 2, 12, 34), 503],
+      [Date.UTC(2022, 2, 2, 12, 40), 150],
+      [Date.UTC(2022, 2, 2, 13, 0), 177],
+      [Date.UTC(2022, 2, 2, 13, 30), 658],
+      [Date.UTC(2022, 2, 2, 15, 30), 31],
+      [Date.UTC(2022, 2, 2, 18, 50), 931],
+      [Date.UTC(2022, 2, 2, 20, 34), 133],
+      [Date.UTC(2022, 2, 2, 22, 0), 175]
+    ],
+    [
+      [Date.UTC(2022, 2, 2, 12, 0), 916],
+      [Date.UTC(2022, 2, 2, 12, 40), 64],
+      [Date.UTC(2022, 2, 2, 13, 0), 742],
+      [Date.UTC(2022, 2, 2, 13, 10), 851],
+      [Date.UTC(2022, 2, 2, 14, 40), 490],
+      [Date.UTC(2022, 2, 2, 15, 0), 742],
+      [Date.UTC(2022, 2, 2, 16, 30), 282],
+      [Date.UTC(2022, 2, 2, 18, 23), 121],
+      [Date.UTC(2022, 2, 2, 22, 0), 434]
+    ],
+    [
+      [Date.UTC(2022, 2, 2, 12, 0), 912],
+      [Date.UTC(2022, 2, 2, 12, 40), 642],
+      [Date.UTC(2022, 2, 2, 13, 0), 74],
+      [Date.UTC(2022, 2, 2, 13, 10), 451],
+      [Date.UTC(2022, 2, 2, 14, 40), 410],
+      [Date.UTC(2022, 2, 2, 15, 0), 732],
+      [Date.UTC(2022, 2, 2, 16, 30), 22],
+      [Date.UTC(2022, 2, 2, 18, 23), 421],
+      [Date.UTC(2022, 2, 2, 24, 0), 634]
+    ]
+  ];
 
-  const [currency, setCurrency] = useState('USD');
+  countriesBarChart.sort((prev, next) => next.value - prev.value);
 
   const [barChartOptions, setBarChartOptions] = useState({
     chart: {
@@ -89,6 +151,8 @@ function MainPage() {
       lineColor: '#BFBFBF',
       min: 0,
       gridLineWidth: 0,
+      tickWidth: 1,
+      tickLength: 4,
       title: {
         text: null,
         align: 'high'
@@ -157,10 +221,12 @@ function MainPage() {
     xAxis: {
       type: 'datetime',
       tickInterval: 3600 * 1000,
-      min: Date.UTC(2013, 4, 22, 12, 0),
-      max: Date.UTC(2013, 4, 22, 22, 0),
+      tickWidth: 1,
+      tickLength: 4,
+      min: Date.UTC(2022, 2, 2, 12, 20, 0),
+      max: Date.UTC(2022, 2, 2, 22, 20, 0),
       labels: {
-        format: '{value:%d-%m-%Y %H:%M}',
+        format: '{value:%H:%M}',
       },
       crosshair: {
         color: '#BFBFBF',
@@ -220,51 +286,21 @@ function MainPage() {
       marker: {
         enabled: false
       },
-      data: [
-        [Date.UTC(2013, 4, 22, 12, 0), 934],
-        [Date.UTC(2013, 4, 22, 12, 34), 503],
-        [Date.UTC(2013, 4, 22, 12, 40), 150],
-        [Date.UTC(2013, 4, 22, 13, 0), 177],
-        [Date.UTC(2013, 4, 22, 13, 30), 658],
-        [Date.UTC(2013, 4, 22, 15, 30), 31],
-        [Date.UTC(2013, 4, 22, 18, 50), 931],
-        [Date.UTC(2013, 4, 22, 20, 34), 133],
-        [Date.UTC(2013, 4, 22, 22, 0), 175]
-      ]
+      data: dataLineChart[0]
     }, {
       name: 'line B',
       color: '#42C86A',
       marker: {
         enabled: false
       },
-      data: [
-        [Date.UTC(2013, 4, 22, 12, 0), 916],
-        [Date.UTC(2013, 4, 22, 12, 40), 64],
-        [Date.UTC(2013, 4, 22, 13, 0), 742],
-        [Date.UTC(2013, 4, 22, 13, 10), 851],
-        [Date.UTC(2013, 4, 22, 14, 40), 490],
-        [Date.UTC(2013, 4, 22, 15, 0), 742],
-        [Date.UTC(2013, 4, 22, 16, 30), 282],
-        [Date.UTC(2013, 4, 22, 18, 23), 121],
-        [Date.UTC(2013, 4, 22, 22, 0), 434]
-      ]
+      data: dataLineChart[1]
     }, {
       name: 'line C',
       color: '#1890FF',
       marker: {
         enabled: false
       },
-      data: [
-        [Date.UTC(2013, 4, 22, 12, 0), 744],
-        [Date.UTC(2013, 4, 22, 12, 40), 722],
-        [Date.UTC(2013, 4, 22, 14, 0), 405],
-        [Date.UTC(2013, 4, 22, 15, 10), 771],
-        [Date.UTC(2013, 4, 22, 16, 40), 185],
-        [Date.UTC(2013, 4, 22, 17, 30), 377],
-        [Date.UTC(2013, 4, 22, 18, 0), 742],
-        [Date.UTC(2013, 4, 22, 20, 23), 147],
-        [Date.UTC(2013, 4, 22, 23, 0), 387]
-      ]
+      data: dataLineChart[2]
     }],
   });
 
@@ -279,17 +315,211 @@ function MainPage() {
   };
 
   const selectDate = (date) => {
+    //генерация данных для таблицы
+    setDataTable(generateTableData());
+
+    //генерация данных для блоков статистики
+    setStatisticsBlocks([
+      {
+        title: 'Water',
+        previousValue: statisticsBlocks[0].currentValue,
+        currentValue: Math.round(Math.random() * 29500 + 500)
+      },
+      {
+        title: 'Fire',
+        previousValue: statisticsBlocks[1].currentValue,
+        currentValue: Math.round(Math.random() * 29500 + 500)
+      },
+      {
+        title: 'Wind',
+        previousValue: statisticsBlocks[2].currentValue,
+        currentValue: Math.round(Math.random() * 29500 + 500)
+      },
+      {
+        title: 'Forest',
+        previousValue: statisticsBlocks[3].currentValue,
+        currentValue: Math.round(Math.random() * 29500 + 500)
+      }
+    ]);
+
+    //генерация данных для bar chart
     for (let i = 0; i < countriesBarChart.length; i++) {
-      countriesBarChart[i].value = Math.round(Math.random() * 20000);
+      countriesBarChart[i].value = Math.round(Math.random() * 20001);
     }
     countriesBarChart.sort((prev, next) => next.value - prev.value);
     setBarChartOptions({
-      series: {data: countriesBarChart.map(country => country.value)},
-      xAxis: {categories: countriesBarChart.map(country => country.name)}
+      series: {
+        data: countriesBarChart.map(country => country.value)
+      },
+      xAxis: {
+        categories: countriesBarChart.map(country => country.name)
+      }
     });
 
-    console.log(date[0]._d.getDate());
+    let numberOfValues = Math.round(Math.random() * 61 + 20);
+    let newDataLineChart = [];
+
+    //генерация данных для line chart
+    if (date[0]._d.getFullYear() === date[1]._d.getFullYear() &&
+      date[0]._d.getMonth() === date[1]._d.getMonth() &&
+      date[0]._d.getDate() === date[1]._d.getDate()) {
+
+      //генерация данных для line chart для почасового интервала
+      for (let i = 0; i < dataLineChart.length; i++) {
+        let data = [
+          [Date.UTC(
+            date[0]._d.getFullYear(),
+            date[0]._d.getMonth(),
+            date[0]._d.getDate(),
+            date[0]._d.getHours(),
+            date[0]._d.getMinutes()
+          ),
+            Math.round(Math.random() * 2001)
+          ]
+        ];
+
+        for (let j = 1; j < numberOfValues - 1; j++) {
+          let point = [Date.UTC(
+            date[0]._d.getFullYear(),
+            date[0]._d.getMonth(),
+            date[0]._d.getDate(),
+            Math.round(Math.random() * (date[1]._d.getHours() + 1 - date[0]._d.getHours()) + date[0]._d.getHours()),
+            Math.round(Math.random() * 61)
+          ),
+            Math.round(Math.random() * 2001)
+          ];
+
+          data.push(point);
+        }
+
+        data.push([Date.UTC(
+          date[1]._d.getFullYear(),
+          date[1]._d.getMonth(),
+          date[1]._d.getDate(),
+          date[1]._d.getHours(),
+          date[1]._d.getMinutes()
+        ),
+          Math.round(Math.random() * 2001)
+        ]);
+
+        newDataLineChart.push(data);
+      }
+
+      setLineChartOptions({
+        xAxis: {
+          labels: {
+            format: '{value:%H:%M}'
+          },
+          tickInterval: 3600 * 1000,
+          min: Date.UTC(date[0]._d.getFullYear(),
+            date[0]._d.getMonth(),
+            date[0]._d.getDate(),
+            date[0]._d.getHours(),
+            date[0]._d.getMinutes(), 0),
+          max: Date.UTC(date[1]._d.getFullYear(),
+            date[1]._d.getMonth(),
+            date[1]._d.getDate(),
+            date[1]._d.getHours(),
+            date[1]._d.getMinutes(), 0)
+        },
+        series: [{
+          data: newDataLineChart[0]
+        }, {
+          data: newDataLineChart[1]
+        }, {
+          data: newDataLineChart[2]
+        }]
+      });
+    } else {
+
+      //генерация данных для line chart для интервала в один день
+      for (let i = 0; i < dataLineChart.length; i++) {
+        let data = [
+          [Date.UTC(
+            date[0]._d.getFullYear(),
+            date[0]._d.getMonth(),
+            date[0]._d.getDate(),
+            date[0]._d.getHours(),
+            date[0]._d.getMinutes()
+          ),
+            Math.round(Math.random() * 2001)
+          ]
+        ];
+
+        for (let j = 1; j < numberOfValues - 1; j++) {
+          let point = [Date.UTC(
+            Math.round(Math.random() * (date[1]._d.getFullYear() + 1 - date[0]._d.getFullYear()) + date[0]._d.getFullYear()),
+            Math.round(Math.random() * (date[1]._d.getMonth() + 1 - date[0]._d.getMonth()) + date[0]._d.getMonth()),
+            Math.round(Math.random() * (date[1]._d.getDate() + 1 - date[0]._d.getDate()) + date[0]._d.getDate()),
+            Math.round(Math.random() * 24),
+            Math.round(Math.random() * 61)
+          ),
+            Math.round(Math.random() * 2001)
+          ];
+
+          data.push(point);
+        }
+
+        data.push([Date.UTC(
+          date[1]._d.getFullYear(),
+          date[1]._d.getMonth(),
+          date[1]._d.getDate(),
+          date[1]._d.getHours(),
+          date[1]._d.getMinutes()
+        ),
+          Math.round(Math.random() * 2001)
+        ]);
+
+        newDataLineChart.push(data);
+      }
+
+      setLineChartOptions({
+        xAxis: {
+          labels: {
+            format: '{value:%e %b}'
+          },
+          tickInterval: 24 * 3600 * 1000,
+          min: Date.UTC(date[0]._d.getFullYear(),
+            date[0]._d.getMonth(),
+            date[0]._d.getDate(),
+            date[0]._d.getHours(),
+            date[0]._d.getMinutes(),
+            0),
+          max: Date.UTC(date[1]._d.getFullYear(),
+            date[1]._d.getMonth(),
+            date[1]._d.getDate(),
+            date[1]._d.getHours(),
+            date[1]._d.getMinutes(),
+            0)
+        },
+        series: [{
+          data: newDataLineChart[0]
+        }, {
+          data: newDataLineChart[1]
+        }, {
+          data: newDataLineChart[2]
+        }]
+      });
+    }
+
+    //генерация данных для таблицы
+
   }
+
+  const selectPage = (isDashboard, isStatistics) => {
+    isDashboardSelected(isDashboard);
+    isStatisticsSelected(isStatistics);
+
+    isDashboard ? setPageTitle('Good morning!') : setPageTitle('Statistics');
+  }
+
+  const dashboardMenuClass = () => cn('menu-item', {
+    ['menu-item_active']: dashboardSelected
+  });
+
+  const statisticsMenuClass = () => cn('menu-item', {
+    ['menu-item_active']: statisticsSelected
+  });
 
   return (
     <Layout>
@@ -298,12 +528,12 @@ function MainPage() {
           .Logo
         </div>
 
-        <div className="menu-item">
+        <div className={dashboardMenuClass()} onClick={() => selectPage(true, false)}>
           <DashboardOutlined style={{marginRight: 10}}/>
           Dashboard
         </div>
 
-        <div className="menu-item">
+        <div className={statisticsMenuClass()} onClick={() => selectPage(false, true)}>
           <TableOutlined style={{marginRight: 10}}/>
           Statistics
         </div>
@@ -337,7 +567,7 @@ function MainPage() {
           </div>
         </Header>
         <Content style={{padding: '40px 24px'}}>
-          <PageTitle title='Good morning!'/>
+          <PageTitle title={pageTitle}/>
 
           <RangePicker
             style={{width: 241, height: 40, marginBottom: '16px', borderRadius: '8px'}}
@@ -349,6 +579,14 @@ function MainPage() {
             statisticsBlocks={statisticsBlocks}
             barChartOptions={barChartOptions}
             lineChartOptions={lineChartOptions}
+            isShow={dashboardSelected}
+          />
+
+          <Statistics
+            statisticsBlock={statisticsBlocks[0]}
+            dataTable={dataTable}
+            isShow={statisticsSelected}
+            currency={currency}
           />
         </Content>
       </Layout>

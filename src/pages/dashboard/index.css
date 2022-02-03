@@ -4,6 +4,10 @@
     justify-content: space-between;
 }
 
+.no-display {
+    display: none;
+}
+
 .statistics-blocks {
     display: flex;
     flex-direction: row;
@@ -12,7 +16,7 @@
 }
 
 .bar-chart {
-    width: 35%;
+    width: 45%;
     height: 304px;
     background: #FFFFFF;
     border: 0.5px solid #E9E9FF;
