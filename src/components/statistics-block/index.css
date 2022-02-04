@@ -1,4 +1,4 @@
-.statistics-block {
+.statistics {
     background: #FFFFFF;
     border: 0.5px solid #E1E1E1;
     border-radius: 8px;
@@ -8,7 +8,7 @@
     margin-bottom: 20px;
 }
 
-.statistics-block__header {
+.statistics__header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -16,7 +16,7 @@
     margin-bottom: 12px;
 }
 
-.statistics-block__content {
+.statistics__content {
     display: flex;
     flex-direction: row;
     justify-content: left;
@@ -24,17 +24,17 @@
     border-bottom: 1px dashed #E1E1E1;
 }
 
-.statistics-block__current-value {
+.statistics__current-value {
     font-size: 30px;
     line-height: 38px;
     font-weight: bold;
 }
 
-.statistics-block__value-change {
+.statistics__value-change {
     font-size: 12px;
 }
 
-.statistics-block__previous-value {
+.statistics__previous-value {
     color: #8C8C8C;
     margin-top: 5px;
 }

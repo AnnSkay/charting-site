@@ -15,148 +15,186 @@ const {Header, Sider, Content} = Layout;
 const {RangePicker} = DatePicker;
 
 function MainPage() {
-  const [dashboardSelected, isDashboardSelected] = useState(true);
-  const [statisticsSelected, isStatisticsSelected] = useState(false);
+  // получение символа валюты
+  function getCurrencySymbol(currencyCode) {
+    switch (currencyCode) {
+      case 'USD':
+        return '$';
+      case 'EUR':
+        return '€';
+      default:
+        return '¤';
+    }
+  }
+
+  // генерация рандомных данных для блоков статистики
+  function generateStatisticsBlocksData() {
+    const blocksTitle = ['Water', 'Fire', 'Wind', 'Forest'];
+    const blocksData = [];
+
+    for (let i = 0; i < blocksTitle.length; i++) {
+      blocksData.push({
+        title: blocksTitle[i],
+        previousValue: Math.round(Math.random() * 29500 + 500),
+        currentValue: Math.round(Math.random() * 29500 + 500)
+      });
+    }
+
+    return blocksData;
+  }
+
+  // генерация рандомных данных для bar chart
+  function generateBarChartData() {
+    const countriesName = ['USA', 'Spain', 'Italy', 'Russia'];
+    const countriesColor = ['#EE0056', '#6900EE', '#EE9D00', '#2100EE'];
+    const data = [];
+
+    for (let i = 0; i < countriesName.length; i++) {
+      data.push({
+        name: countriesName[i],
+        color: countriesColor[i],
+        value: Math.round(Math.random() * 20001)
+      });
+    }
+
+    data.sort((prev, next) => next.value - prev.value);
+
+    return data;
+  }
+
+  // генерация рандомных данных для line chart
+  function generateLineChartData(startDate, endDate) {
+    const seriesName = ['line A', 'line B', 'line C'];
+    const seriesColor = ['#FF0000', '#42C86A', '#1890FF'];
+    const numberOfPoints = Math.round(Math.random() * 61 + 20);
+    const lineChartSeriesData = [];
+
+    for (let i = 0; i < seriesName.length; i++) {
+      let singleSeriesData = [
+        [Date.UTC(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate(),
+          startDate.getHours(),
+          startDate.getMinutes()
+        ),
+          Math.round(Math.random() * 2001)
+        ]
+      ];
+
+      for (let j = 1; j < numberOfPoints - 1; j++) {
+        singleSeriesData.push([Date.UTC(
+          Math.trunc(Math.random() * (endDate.getFullYear() + 1 - startDate.getFullYear()) + startDate.getFullYear()),
+          Math.trunc(Math.random() * (endDate.getMonth() + 1 - startDate.getMonth()) + startDate.getMonth()),
+          Math.trunc(Math.random() * (endDate.getDate() + 1 - startDate.getDate()) + startDate.getDate()),
+          Math.trunc(Math.random() * (endDate.getHours() + 1 - startDate.getHours()) + startDate.getHours()),
+          Math.trunc(Math.random() * 61)
+        ),
+          Math.round(Math.random() * 2001)
+        ]);
+      }
+
+      singleSeriesData.push([Date.UTC(
+        endDate.getFullYear(),
+        endDate.getMonth(),
+        endDate.getDate(),
+        endDate.getHours(),
+        endDate.getMinutes()
+      ),
+        Math.round(Math.random() * 2001)
+      ]);
+
+      lineChartSeriesData.push({
+        name: seriesName[i],
+        color: seriesColor[i],
+        marker: {
+          enabled: false
+        },
+        data: singleSeriesData
+      });
+    }
+
+
+    return lineChartSeriesData;
+  }
+
+  // генерация рандомных данных для таблицы
+  function generateTableData() {
+    const rowsNumber = 15;
+    const tableData = [];
+
+    for (let i = 0; i < rowsNumber; i++) {
+      tableData.push({
+        key: i + 1,
+        name: `Row ${i + 1}`,
+        value: Math.round(Math.random() * 49001 + 1000),
+        prevValue: Math.round(Math.random() * 49001 + 1000)
+      });
+    }
+
+    return tableData;
+  }
+
+  const [menuItemsSelected, isMenuItemsSelected] = useState({
+    dashboard: true,
+    statistics: false
+  });
 
   const [pageTitle, setPageTitle] = useState('Good morning!');
 
   const [currency, setCurrency] = useState('USD');
 
-  const generateTableData = () => {
-    let dataTableRandom = [];
-    for (let i = 0; i < 15; i++) {
-      let currentValue = Math.round(Math.random() * 49001 + 1000);
-      let previousValue = Math.round(Math.random() * 49001 + 1000);
-      let dataRow = {};
-      dataRow.key = i + 1;
-      dataRow.name = `Row ${i + 1}`;
-      dataRow.value = currentValue;
-      dataRow.prevValue = previousValue;
-
-      dataTableRandom.push(dataRow);
-    }
-
-    return dataTableRandom;
-  }
-
   const [dataTable, setDataTable] = useState(generateTableData());
 
-  const [statisticsBlocks, setStatisticsBlocks] = useState([
-    {
-      title: 'Water',
-      currentValue: 20567,
-      previousValue: 12056
-    },
-    {
-      title: 'Fire',
-      currentValue: 5567,
-      previousValue: 13056
-    },
-    {
-      title: 'Wind',
-      currentValue: 1567,
-      previousValue: 556
-    },
-    {
-      title: 'Forest',
-      currentValue: 567,
-      previousValue: 544
-    }
-  ]);
+  const [statisticsBlocks, setStatisticsBlocks] = useState(generateStatisticsBlocksData());
 
-  let countriesBarChart = [
-    {
-      name: 'USA',
-      value: 3456
-    },
-    {
-      name: 'Spain',
-      value: 8657
-    },
-    {
-      name: 'Italy',
-      value: 2576
-    },
-    {
-      name: 'Russia',
-      value: 9000
-    }
-  ];
-
-  let dataLineChart = [
-    [
-      [Date.UTC(2022, 2, 2, 12, 0), 934],
-      [Date.UTC(2022, 2, 2, 12, 34), 503],
-      [Date.UTC(2022, 2, 2, 12, 40), 150],
-      [Date.UTC(2022, 2, 2, 13, 0), 177],
-      [Date.UTC(2022, 2, 2, 13, 30), 658],
-      [Date.UTC(2022, 2, 2, 15, 30), 31],
-      [Date.UTC(2022, 2, 2, 18, 50), 931],
-      [Date.UTC(2022, 2, 2, 20, 34), 133],
-      [Date.UTC(2022, 2, 2, 22, 0), 175]
-    ],
-    [
-      [Date.UTC(2022, 2, 2, 12, 0), 916],
-      [Date.UTC(2022, 2, 2, 12, 40), 64],
-      [Date.UTC(2022, 2, 2, 13, 0), 742],
-      [Date.UTC(2022, 2, 2, 13, 10), 851],
-      [Date.UTC(2022, 2, 2, 14, 40), 490],
-      [Date.UTC(2022, 2, 2, 15, 0), 742],
-      [Date.UTC(2022, 2, 2, 16, 30), 282],
-      [Date.UTC(2022, 2, 2, 18, 23), 121],
-      [Date.UTC(2022, 2, 2, 22, 0), 434]
-    ],
-    [
-      [Date.UTC(2022, 2, 2, 12, 0), 912],
-      [Date.UTC(2022, 2, 2, 12, 40), 642],
-      [Date.UTC(2022, 2, 2, 13, 0), 74],
-      [Date.UTC(2022, 2, 2, 13, 10), 451],
-      [Date.UTC(2022, 2, 2, 14, 40), 410],
-      [Date.UTC(2022, 2, 2, 15, 0), 732],
-      [Date.UTC(2022, 2, 2, 16, 30), 22],
-      [Date.UTC(2022, 2, 2, 18, 23), 421],
-      [Date.UTC(2022, 2, 2, 24, 0), 634]
-    ]
-  ];
-
-  countriesBarChart.sort((prev, next) => next.value - prev.value);
+  const [chartsData, setChartsData] = useState({
+    barChart: generateBarChartData(),
+    lineChart: generateLineChartData(
+      new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(),),
+      new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 20)
+    ).map(item => {
+        item.data = item.data.sort((prev, next) => prev[0] - next[0]);
+        return item;
+      }
+    )
+  });
 
   const [barChartOptions, setBarChartOptions] = useState({
     chart: {
       type: 'bar'
     },
 
-    colors: ['#2100EE', '#6900EE', '#EE0056', '#EE9D00'],
+    colors: chartsData.barChart.map(data => data.color),
 
     title: {
       text: null
     },
 
     xAxis: {
+      title: {
+        text: null
+      },
       lineWidth: 0,
-      categories: countriesBarChart.map(country => country.name),
+      categories: chartsData.barChart.map(data => data.name),
       labels: {
         style: {
           color: '#8C8C8C',
           fontSize: '16px'
         }
-      },
-      title: {
-        text: null
       }
     },
 
     yAxis: {
+      title: {
+        text: null
+      },
       lineWidth: 1,
       lineColor: '#BFBFBF',
       min: 0,
       gridLineWidth: 0,
       tickWidth: 1,
       tickLength: 4,
-      title: {
-        text: null,
-        align: 'high'
-      },
       labels: {
         style: {
           color: '#8C8C8C',
@@ -167,7 +205,7 @@ function MainPage() {
 
           if (label.substr(label.length - 1) === 'k') {
             label = label.slice(0, -1) * 1000;
-            return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
           }
 
           return label;
@@ -183,7 +221,7 @@ function MainPage() {
       shadow: false,
       headerFormat: '',
       pointFormat: '{point.y}<br/>',
-      valueSuffix: (currency === 'USD') ? '$' : '€',
+      valueSuffix: getCurrencySymbol(currency),
       shared: true
     },
 
@@ -196,10 +234,10 @@ function MainPage() {
     },
 
     series: [{
-      name: ['Money', 'ffc'],
+      name: null,
       colorByPoint: true,
       showInLegend: false,
-      data: countriesBarChart.map(country => country.value)
+      data: chartsData.barChart.map(data => data.value)
     }]
   });
 
@@ -223,10 +261,10 @@ function MainPage() {
       tickInterval: 3600 * 1000,
       tickWidth: 1,
       tickLength: 4,
-      min: Date.UTC(2022, 2, 2, 12, 20, 0),
-      max: Date.UTC(2022, 2, 2, 22, 20, 0),
+      min: Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+      max: Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 20),
       labels: {
-        format: '{value:%H:%M}',
+        format: '{value:%H:%M}'
       },
       crosshair: {
         color: '#BFBFBF',
@@ -274,266 +312,130 @@ function MainPage() {
       headerFormat: '',
       useHTML: true,
       pointFormat:
-        '<svg viewBox="0 0 80 80" width="4" height="4">\n <circle style="fill: {series.color}" cx="2" cy="2" r="2"/>\n</svg>' +
-        '<b> {series.name}: </b>' + '{point.y}<br/>',
+        `<svg viewBox="0 0 80 80" width="4" height="4">
+            <circle style="fill: {series.color}" cx="2" cy="2" r="2"/>
+        </svg>
+        <b> {series.name}: </b>{point.y}<br/>`,
       valueSuffix: '$',
       shared: true
     },
 
-    series: [{
-      name: 'line A',
-      color: '#FF0000',
-      marker: {
-        enabled: false
-      },
-      data: dataLineChart[0]
-    }, {
-      name: 'line B',
-      color: '#42C86A',
-      marker: {
-        enabled: false
-      },
-      data: dataLineChart[1]
-    }, {
-      name: 'line C',
-      color: '#1890FF',
-      marker: {
-        enabled: false
-      },
-      data: dataLineChart[2]
-    }],
+    series: chartsData.lineChart
   });
 
-  const selectChangeCurrency = (value) => {
+  const changeCurrency = (value) => {
     setCurrency(value);
-    setBarChartOptions({
-      tooltip: {valueSuffix: value === 'USD' ? '$' : '€'}
-    });
-    setLineChartOptions({
-      tooltip: {valueSuffix: value === 'USD' ? '$' : '€'}
-    });
+
+    const valueSuffixOptions = {
+      tooltip: {
+        valueSuffix: getCurrencySymbol(value)
+      }
+    };
+
+    setBarChartOptions(valueSuffixOptions);
+    setLineChartOptions(valueSuffixOptions);
   };
 
-  const selectDate = (date) => {
-    //генерация данных для таблицы
-    setDataTable(generateTableData());
+  //изменение данных для всех виджетов страницы при выборе даты
+  const changeDate = (date) => {
+    //изменение данных для блоков статистики
+    setStatisticsBlocks(generateStatisticsBlocksData());
 
-    //генерация данных для блоков статистики
-    setStatisticsBlocks([
-      {
-        title: 'Water',
-        previousValue: statisticsBlocks[0].currentValue,
-        currentValue: Math.round(Math.random() * 29500 + 500)
-      },
-      {
-        title: 'Fire',
-        previousValue: statisticsBlocks[1].currentValue,
-        currentValue: Math.round(Math.random() * 29500 + 500)
-      },
-      {
-        title: 'Wind',
-        previousValue: statisticsBlocks[2].currentValue,
-        currentValue: Math.round(Math.random() * 29500 + 500)
-      },
-      {
-        title: 'Forest',
-        previousValue: statisticsBlocks[3].currentValue,
-        currentValue: Math.round(Math.random() * 29500 + 500)
-      }
-    ]);
+    //изменение данных для bar chart
+    const randomBarChartData = generateBarChartData();
 
-    //генерация данных для bar chart
-    for (let i = 0; i < countriesBarChart.length; i++) {
-      countriesBarChart[i].value = Math.round(Math.random() * 20001);
-    }
-    countriesBarChart.sort((prev, next) => next.value - prev.value);
     setBarChartOptions({
       series: {
-        data: countriesBarChart.map(country => country.value)
+        data: randomBarChartData.map(data => data.value)
       },
       xAxis: {
-        categories: countriesBarChart.map(country => country.name)
+        categories: randomBarChartData.map(data => data.name)
       }
     });
 
-    let numberOfValues = Math.round(Math.random() * 61 + 20);
-    let newDataLineChart = [];
+    //изменение данных для line chart
+    let format, tickInterval;
 
-    //генерация данных для line chart
     if (date[0]._d.getFullYear() === date[1]._d.getFullYear() &&
       date[0]._d.getMonth() === date[1]._d.getMonth() &&
       date[0]._d.getDate() === date[1]._d.getDate()) {
-
-      //генерация данных для line chart для почасового интервала
-      for (let i = 0; i < dataLineChart.length; i++) {
-        let data = [
-          [Date.UTC(
-            date[0]._d.getFullYear(),
-            date[0]._d.getMonth(),
-            date[0]._d.getDate(),
-            date[0]._d.getHours(),
-            date[0]._d.getMinutes()
-          ),
-            Math.round(Math.random() * 2001)
-          ]
-        ];
-
-        for (let j = 1; j < numberOfValues - 1; j++) {
-          let point = [Date.UTC(
-            date[0]._d.getFullYear(),
-            date[0]._d.getMonth(),
-            date[0]._d.getDate(),
-            Math.round(Math.random() * (date[1]._d.getHours() + 1 - date[0]._d.getHours()) + date[0]._d.getHours()),
-            Math.round(Math.random() * 61)
-          ),
-            Math.round(Math.random() * 2001)
-          ];
-
-          data.push(point);
-        }
-
-        data.push([Date.UTC(
-          date[1]._d.getFullYear(),
-          date[1]._d.getMonth(),
-          date[1]._d.getDate(),
-          date[1]._d.getHours(),
-          date[1]._d.getMinutes()
-        ),
-          Math.round(Math.random() * 2001)
-        ]);
-
-        newDataLineChart.push(data);
-      }
-
-      setLineChartOptions({
-        xAxis: {
-          labels: {
-            format: '{value:%H:%M}'
-          },
-          tickInterval: 3600 * 1000,
-          min: Date.UTC(date[0]._d.getFullYear(),
-            date[0]._d.getMonth(),
-            date[0]._d.getDate(),
-            date[0]._d.getHours(),
-            date[0]._d.getMinutes(), 0),
-          max: Date.UTC(date[1]._d.getFullYear(),
-            date[1]._d.getMonth(),
-            date[1]._d.getDate(),
-            date[1]._d.getHours(),
-            date[1]._d.getMinutes(), 0)
-        },
-        series: [{
-          data: newDataLineChart[0]
-        }, {
-          data: newDataLineChart[1]
-        }, {
-          data: newDataLineChart[2]
-        }]
-      });
+      format = '{value:%H:%M}';
+      tickInterval = 3600 * 1000;
     } else {
-
-      //генерация данных для line chart для интервала в один день
-      for (let i = 0; i < dataLineChart.length; i++) {
-        let data = [
-          [Date.UTC(
-            date[0]._d.getFullYear(),
-            date[0]._d.getMonth(),
-            date[0]._d.getDate(),
-            date[0]._d.getHours(),
-            date[0]._d.getMinutes()
-          ),
-            Math.round(Math.random() * 2001)
-          ]
-        ];
-
-        for (let j = 1; j < numberOfValues - 1; j++) {
-          let point = [Date.UTC(
-            Math.round(Math.random() * (date[1]._d.getFullYear() + 1 - date[0]._d.getFullYear()) + date[0]._d.getFullYear()),
-            Math.round(Math.random() * (date[1]._d.getMonth() + 1 - date[0]._d.getMonth()) + date[0]._d.getMonth()),
-            Math.round(Math.random() * (date[1]._d.getDate() + 1 - date[0]._d.getDate()) + date[0]._d.getDate()),
-            Math.round(Math.random() * 24),
-            Math.round(Math.random() * 61)
-          ),
-            Math.round(Math.random() * 2001)
-          ];
-
-          data.push(point);
-        }
-
-        data.push([Date.UTC(
-          date[1]._d.getFullYear(),
-          date[1]._d.getMonth(),
-          date[1]._d.getDate(),
-          date[1]._d.getHours(),
-          date[1]._d.getMinutes()
-        ),
-          Math.round(Math.random() * 2001)
-        ]);
-
-        newDataLineChart.push(data);
-      }
-
-      setLineChartOptions({
-        xAxis: {
-          labels: {
-            format: '{value:%e %b}'
-          },
-          tickInterval: 24 * 3600 * 1000,
-          min: Date.UTC(date[0]._d.getFullYear(),
-            date[0]._d.getMonth(),
-            date[0]._d.getDate(),
-            date[0]._d.getHours(),
-            date[0]._d.getMinutes(),
-            0),
-          max: Date.UTC(date[1]._d.getFullYear(),
-            date[1]._d.getMonth(),
-            date[1]._d.getDate(),
-            date[1]._d.getHours(),
-            date[1]._d.getMinutes(),
-            0)
-        },
-        series: [{
-          data: newDataLineChart[0]
-        }, {
-          data: newDataLineChart[1]
-        }, {
-          data: newDataLineChart[2]
-        }]
-      });
+      format = '{value:%e %b}';
+      tickInterval = 24 * 3600 * 1000;
     }
 
-    //генерация данных для таблицы
+    const randomLineChartData = generateLineChartData(date[0]._d, date[1]._d);
 
+    setLineChartOptions({
+      xAxis: {
+        labels: {
+          format: format
+        },
+        tickInterval: tickInterval,
+        min: Date.UTC(date[0]._d.getFullYear(),
+          date[0]._d.getMonth(),
+          date[0]._d.getDate(),
+          date[0]._d.getHours(),
+          date[0]._d.getMinutes(), 0),
+        max: Date.UTC(date[1]._d.getFullYear(),
+          date[1]._d.getMonth(),
+          date[1]._d.getDate(),
+          date[1]._d.getHours(),
+          date[1]._d.getMinutes(), 0)
+      },
+      series: randomLineChartData
+    });
+
+    setChartsData({
+      ...chartsData,
+      barChart: randomBarChartData,
+      lineChart: randomLineChartData
+    });
+
+    //изменение данных для таблицы
+    setDataTable(generateTableData());
   }
 
-  const selectPage = (isDashboard, isStatistics) => {
-    isDashboardSelected(isDashboard);
-    isStatisticsSelected(isStatistics);
+  //переключение по страницам
+  const selectPage = (isDashboardSelected, isStatisticsSelected) => {
+    isMenuItemsSelected({
+      ...menuItemsSelected,
+      dashboard: isDashboardSelected,
+      statistics: isStatisticsSelected
+    });
 
-    isDashboard ? setPageTitle('Good morning!') : setPageTitle('Statistics');
+    isDashboardSelected ? setPageTitle('Good morning!') : setPageTitle('Statistics');
   }
 
-  const dashboardMenuClass = () => cn('menu-item', {
-    ['menu-item_active']: dashboardSelected
+  const dashboardMenuClass = () => cn('sider__menu-item', {
+    'sider__menu-item_active': menuItemsSelected.dashboard
   });
 
-  const statisticsMenuClass = () => cn('menu-item', {
-    ['menu-item_active']: statisticsSelected
+  const statisticsMenuClass = () => cn('sider__menu-item', {
+    'sider__menu-item_active': menuItemsSelected.statistics
   });
 
   return (
     <Layout>
       <Sider>
-        <div className="logo">
+        <div className="sider__logo">
           .Logo
         </div>
 
-        <div className={dashboardMenuClass()} onClick={() => selectPage(true, false)}>
+        <div
+          className={dashboardMenuClass()}
+          onClick={() => selectPage(true, false)}
+        >
           <DashboardOutlined style={{marginRight: 10}}/>
           Dashboard
         </div>
 
-        <div className={statisticsMenuClass()} onClick={() => selectPage(false, true)}>
+        <div
+          className={statisticsMenuClass()}
+          onClick={() => selectPage(false, true)}
+        >
           <TableOutlined style={{marginRight: 10}}/>
           Statistics
         </div>
@@ -542,36 +444,38 @@ function MainPage() {
       <Layout>
         <Header>
           <div>
-            <label className="label-currency">
+            <label className="header__currency-label">
               Currency
             </label>
 
             <Select
               value={currency}
-              onChange={selectChangeCurrency}
-              id={currency}
-              style={{width: 73, borderRadius: '8px'}}
+              onChange={changeCurrency}
             >
               <Option value="USD">USD</Option>
               <Option value="EUR">EUR</Option>
             </Select>
           </div>
 
-          <div className="avatar-block">
-            <Badge dot offset={[-5, 5]}>
-              <Avatar size="large" style={{backgroundColor: 'white'}}
-                      icon={<UserOutlined style={{color: '#605E5E'}}/>}/>
+          <div className="header__avatar-block">
+            <Badge offset={[-5, 5]} dot>
+              <Avatar
+                size="large"
+                style={{backgroundColor: 'white'}}
+                icon={<UserOutlined style={{color: '#605E5E'}}/>}
+              />
             </Badge>
 
             <CaretDownOutlined style={{color: '#BDBDBD', paddingLeft: '5px'}}/>
           </div>
         </Header>
+
         <Content style={{padding: '40px 24px'}}>
           <PageTitle title={pageTitle}/>
 
           <RangePicker
             style={{width: 241, height: 40, marginBottom: '16px', borderRadius: '8px'}}
-            onChange={selectDate}
+            onChange={changeDate}
             showTime
           />
 
@@ -579,14 +483,14 @@ function MainPage() {
             statisticsBlocks={statisticsBlocks}
             barChartOptions={barChartOptions}
             lineChartOptions={lineChartOptions}
-            isShow={dashboardSelected}
+            isShow={menuItemsSelected.dashboard}
           />
 
           <Statistics
             statisticsBlock={statisticsBlocks[0]}
+            currencySymbol={getCurrencySymbol(currency)}
             dataTable={dataTable}
-            isShow={statisticsSelected}
-            currency={currency}
+            isShow={menuItemsSelected.statistics}
           />
         </Content>
       </Layout>

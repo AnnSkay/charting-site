@@ -4,30 +4,28 @@ import 'antd/dist/antd.min.css';
 import {CaretDownOutlined, CaretUpOutlined, InfoCircleOutlined} from "@ant-design/icons";
 
 export function StatisticsBlock({title, currentValue, previousValue}) {
-  const changeValue = (currentValue - previousValue) / previousValue * 100;
-
-  const numberWithSpaces = (number) => {
+  const getNumberWithSpaces = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
 
-  const valueDifference = (previous, current) => {
+  const getValueDifference = (previous, current) => {
     return Math.abs((current - previous) / previous * 100).toFixed(1);
   };
 
   return (
-    <div className="statistics-block">
-      <div className="statistics-block__header">
+    <div className="statistics">
+      <div className="statistics__header">
         {title}
         <InfoCircleOutlined/>
       </div>
 
-      <div className="statistics-block__content">
-        <div className="statistics-block__current-value">
-          {numberWithSpaces(currentValue)}
+      <div className="statistics__content">
+        <div className="statistics__current-value">
+          {getNumberWithSpaces(currentValue)}
         </div>
 
         {
-          changeValue >= 0 ?
+          currentValue >= previousValue ?
             <CaretUpOutlined
               style={{fontSize: '12px', color: '#52C41A', paddingLeft: '10px', paddingRight: '5px'}}
             /> :
@@ -37,15 +35,15 @@ export function StatisticsBlock({title, currentValue, previousValue}) {
         }
 
         <div
-          className="statistics-block__value-change"
-          style={{color: changeValue >= 0 ? '#52C41A' : '#F5222D'}}
+          className="statistics__value-change"
+          style={{color: currentValue >= previousValue ? '#52C41A' : '#F5222D'}}
         >
-          {valueDifference(previousValue, currentValue)}%
+          {getValueDifference(previousValue, currentValue)}%
         </div>
       </div>
 
-      <div className="statistics-block__previous-value">
-        {numberWithSpaces(previousValue)}
+      <div className="statistics__previous-value">
+        {getNumberWithSpaces(previousValue)}
       </div>
     </div>
   )

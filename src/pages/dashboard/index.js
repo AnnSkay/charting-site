@@ -1,11 +1,9 @@
 import React from 'react';
 import './index.css';
-import 'antd/dist/antd.min.css';
 import cn from 'classnames';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import {StatisticsBlock} from "../../components/statistics-block";
-
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
 
 export function Dashboard({statisticsBlocks, barChartOptions, lineChartOptions, isShow}) {
   Highcharts.setOptions({
@@ -18,13 +16,13 @@ export function Dashboard({statisticsBlocks, barChartOptions, lineChartOptions, 
   });
 
   const dashboardClass = () => cn({
-    'no-display': !isShow
+    'dashboard_hidden': !isShow
   });
 
   return (
     <div className={dashboardClass()}>
-      <div className="flex-block">
-        <div className="statistics-blocks">
+      <div className="dashboard__top-part">
+        <div className="dashboard__statistics-blocks">
           {statisticsBlocks &&
           statisticsBlocks.map((block) => {
             return (
@@ -38,14 +36,14 @@ export function Dashboard({statisticsBlocks, barChartOptions, lineChartOptions, 
 
         <HighchartsReact
           highcharts={Highcharts}
-          containerProps={{className: 'bar-chart'}}
+          containerProps={{className: 'dashboard__bar-chart'}}
           options={barChartOptions}
         />
       </div>
 
       <HighchartsReact
         highcharts={Highcharts}
-        containerProps={{className: 'line-chart'}}
+        containerProps={{className: 'dashboard__line-chart'}}
         options={lineChartOptions}
       />
     </div>

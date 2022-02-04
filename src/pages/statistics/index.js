@@ -2,12 +2,12 @@ import React from 'react';
 import './index.css';
 import 'antd/dist/antd.min.css';
 import cn from 'classnames';
-import {StatisticsBlock} from "../../components/statistics-block";
 import {Table} from "antd";
 import {CaretDownOutlined, CaretUpOutlined} from "@ant-design/icons";
+import {StatisticsBlock} from "../../components/statistics-block";
 
 
-export function Statistics({statisticsBlock, dataTable, isShow, currency}) {
+export function Statistics({statisticsBlock, currencySymbol, dataTable, isShow}) {
   const numberWithSpaces = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
@@ -26,8 +26,7 @@ export function Statistics({statisticsBlock, dataTable, isShow, currency}) {
       width: '25%',
       render: (text, record) => (
         <>
-          {numberWithSpaces(record.value)}
-          {currency === 'USD' ? ' $' : ' €'}
+          {numberWithSpaces(record.value)} {currencySymbol}
         </>
       )
     },
@@ -38,8 +37,7 @@ export function Statistics({statisticsBlock, dataTable, isShow, currency}) {
       width: '25%',
       render: (text, record) => (
         <>
-          {numberWithSpaces(record.prevValue)}
-          {currency === 'USD' ? ' $' : ' €'}
+          {numberWithSpaces(record.prevValue)} {currencySymbol}
         </>
       )
     },
@@ -76,17 +74,22 @@ export function Statistics({statisticsBlock, dataTable, isShow, currency}) {
   ];
 
   const statisticsClass = () => cn({
-    'no-display': !isShow
+    'statistics_hidden': !isShow
   });
 
   return (
     <div className={statisticsClass()}>
-      <StatisticsBlock title={statisticsBlock.title}
-                       currentValue={statisticsBlock.currentValue}
-                       previousValue={statisticsBlock.previousValue}
+      <StatisticsBlock
+        title={statisticsBlock.title}
+        currentValue={statisticsBlock.currentValue}
+        previousValue={statisticsBlock.previousValue}
       />
 
-      <Table columns={columns} dataSource={dataTable} pagination={{defaultPageSize: 5}}/>
+      <Table
+        columns={columns}
+        dataSource={dataTable}
+        pagination={{defaultPageSize: 5}}
+      />
     </div>
   )
 }

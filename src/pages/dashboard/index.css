@@ -1,21 +1,21 @@
-.flex-block {
+.dashboard_hidden {
+    display: none;
+}
+
+.dashboard__top-part {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.no-display {
-    display: none;
-}
-
-.statistics-blocks {
+.dashboard__statistics-blocks {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     width: 522px;
 }
 
-.bar-chart {
+.dashboard__bar-chart {
     width: 45%;
     height: 304px;
     background: #FFFFFF;
@@ -24,7 +24,7 @@
     padding: 10px 20px;
 }
 
-.line-chart {
+.dashboard__line-chart {
     width: 100%;
     height: 434px;
     background: #FFFFFF;
