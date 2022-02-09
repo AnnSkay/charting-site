@@ -7,60 +7,60 @@
     font-family: Roboto, sans-serif;
 }
 
-.ant-layout-header {
-    background: #EFEFFF !important;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 19px 27px !important;
-}
+/*.ant-layout-header {*/
+/*    background: #EFEFFF !important;*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*    padding: 19px 27px !important;*/
+/*}*/
 
-.ant-select:not(.ant-select-customize-input) .ant-select-selector {
-    border-radius: 8px !important;
-}
+/*.ant-select:not(.ant-select-customize-input) .ant-select-selector {*/
+/*    border-radius: 8px !important;*/
+/*}*/
 
-.header__currency-label {
-    font-weight: bold;
-    font-size: 14px;
-    margin-right: 11px;
-}
+/*.header__currency-label {*/
+/*    font-weight: bold;*/
+/*    font-size: 14px;*/
+/*    margin-right: 11px;*/
+/*}*/
 
-.ant-layout-sider {
-    background: #FFFFFF !important;
-}
+/*.header__avatar-block {*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    justify-content: space-around;*/
+/*    align-items: center;*/
+/*}*/
 
-.sider__logo {
-    font-family: Gropled, sans-serif;
-    font-weight: bold;
-    font-size: 24px;
-    line-height: 5px;
-    margin: 38px 0 55px 16px;
-}
+/*.ant-layout-sider {*/
+/*    background: #FFFFFF !important;*/
+/*}*/
 
-.sider__menu-item {
-    height: 40px;
-    padding-left: 16px;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-items: center;
-    cursor: pointer;
-}
+/*.sider__logo {*/
+/*    font-family: Gropled, sans-serif;*/
+/*    font-weight: bold;*/
+/*    font-size: 24px;*/
+/*    line-height: 5px;*/
+/*    margin: 38px 0 55px 16px;*/
+/*}*/
 
-.sider__menu-item_active {
-    background: #ECECFF;
-    border-right: 2px solid #8F00FF;
-}
+/*.sider__menu-item {*/
+/*    height: 40px;*/
+/*    padding-left: 16px;*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    justify-content: left;*/
+/*    align-items: center;*/
+/*    cursor: pointer;*/
+/*}*/
 
-.header__avatar-block {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-}
+/*.sider__menu-item_active {*/
+/*    background: #ECECFF;*/
+/*    border-right: 2px solid #8F00FF;*/
+/*}*/
 
-.ant-layout-content {
-    min-height: 120px;
-    background: #F9F9FF !important;
-}
+/*.ant-layout-content {*/
+/*    min-height: 120px;*/
+/*    background: #F9F9FF !important;*/
+/*}*/
