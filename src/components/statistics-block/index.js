@@ -1,9 +1,66 @@
 import React from 'react';
-import './index.css';
+import styled from 'styled-components';
 import 'antd/dist/antd.min.css';
 import {CaretDownOutlined, CaretUpOutlined, InfoCircleOutlined} from "@ant-design/icons";
 
+const StatisticsBlockWrapper = styled.div`
+  background: #FFFFFF;
+  border: 0.5px solid #E1E1E1;
+  border-radius: 8px;
+  width: 241px;
+  padding: 21px 24px 16px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+`;
+
+const StatisticsBlockHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+`;
+
+const StatisticsBlockContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  border-bottom: 1px dashed #E1E1E1;
+`;
+
+const StatisticsBlockCurrentValue = styled.div`
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: bold;
+`;
+
+const StatisticsBlockPreviousValue = styled.div`
+  color: #8C8C8C;
+  margin-top: 5px;
+  padding-left: 4px;
+`;
+
+const CaretUpOutlinedIcon = styled(CaretUpOutlined)`
+  font-size: 12px;
+  color: #52C41A;
+  padding-left: 10px;
+  padding-right: 5px;
+`;
+
+const CaretDownOutlinedIcon = styled(CaretDownOutlined)`
+  font-size: 12px;
+  color: #F5222D;
+  padding-left: 10px;
+  padding-right: 5px;
+`;
+
 export function StatisticsBlock({title, currentValue, previousValue}) {
+  const StatisticsBlockValueChange = styled.div`
+    font-size: 12px;
+    color: ${currentValue >= previousValue ? '#52C41A' : '#F5222D'};
+  `;
+
   const getNumberWithSpaces = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
@@ -13,38 +70,32 @@ export function StatisticsBlock({title, currentValue, previousValue}) {
   };
 
   return (
-    <div className="statistics">
-      <div className="statistics__header">
+    <StatisticsBlockWrapper>
+      <StatisticsBlockHeader>
         {title}
         <InfoCircleOutlined/>
-      </div>
+      </StatisticsBlockHeader>
 
-      <div className="statistics__content">
-        <div className="statistics__current-value">
+      <StatisticsBlockContent>
+        <StatisticsBlockCurrentValue>
           {getNumberWithSpaces(currentValue)}
-        </div>
+        </StatisticsBlockCurrentValue>
 
         {
           currentValue >= previousValue ?
-            <CaretUpOutlined
-              style={{fontSize: '12px', color: '#52C41A', paddingLeft: '10px', paddingRight: '5px'}}
-            /> :
-            <CaretDownOutlined
-              style={{fontSize: '12px', color: '#F5222D', paddingLeft: '10px', paddingRight: '5px'}}
-            />
+            <CaretUpOutlinedIcon/>
+            :
+            <CaretDownOutlinedIcon/>
         }
 
-        <div
-          className="statistics__value-change"
-          style={{color: currentValue >= previousValue ? '#52C41A' : '#F5222D'}}
-        >
+        <StatisticsBlockValueChange>
           {getValueDifference(previousValue, currentValue)}%
-        </div>
-      </div>
+        </StatisticsBlockValueChange>
+      </StatisticsBlockContent>
 
-      <div className="statistics__previous-value">
+      <StatisticsBlockPreviousValue>
         {getNumberWithSpaces(previousValue)}
-      </div>
-    </div>
+      </StatisticsBlockPreviousValue>
+    </StatisticsBlockWrapper>
   )
 }
