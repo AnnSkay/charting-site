@@ -84,7 +84,7 @@ function generateStatisticsBlockData() {
   const blockTitles = ['Water', 'Fire', 'Wind', 'Forest'];
 
   return {
-    title: blockTitles[Math.round(Math.random() * 4)],
+    title: blockTitles[Math.round(Math.random() * 3)],
     previousValue: Math.round(Math.random() * 29500 + 500),
     currentValue: Math.round(Math.random() * 29500 + 500)
   };

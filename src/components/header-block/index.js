@@ -56,15 +56,6 @@ const HeaderBlock = () => {
     setCurrency(value);
 
     currencyStore.change(value);
-
-    const valueSuffixOptions = {
-      tooltip: {
-        // valueSuffix: getCurrencySymbol(value)
-      }
-    };
-
-    // setBarChartOptions(valueSuffixOptions);
-    // setLineChartOptions(valueSuffixOptions);
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import styled, {createGlobalStyle} from 'styled-components';
 import 'antd/dist/antd.min.css';
 import {DatePicker} from 'antd';
@@ -46,7 +46,7 @@ const GlobalStyleCharts = createGlobalStyle`
     background: #FFFFFF;
     border: 0.5px solid #E9E9FF;
     border-radius: 8px;
-    //width: 45%;
+    width: 502px;
     height: 304px;
     padding: 10px 20px;
   }
@@ -344,6 +344,9 @@ const DashboardContent = observer(() => {
       },
       xAxis: {
         categories: randomBarChartData.map(data => data.name)
+      },
+      tooltip: {
+        valueSuffix: currencyStore.currencySymbol
       }
     });
 
@@ -379,6 +382,9 @@ const DashboardContent = observer(() => {
           date[1]._d.getHours(),
           date[1]._d.getMinutes(), 0)
       },
+      tooltip: {
+        valueSuffix: currencyStore.currencySymbol
+      },
       series: randomLineChartData
     });
 
@@ -397,8 +403,6 @@ const DashboardContent = observer(() => {
         onChange={changeDate}
         showTime
       />
-
-      {currencyStore.currency}
 
       <div>
         <StatisticsAndBarChartWrapper>

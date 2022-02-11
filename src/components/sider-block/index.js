@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styled, {createGlobalStyle} from 'styled-components';
 import 'antd/dist/antd.min.css';
 import {Layout} from 'antd';
 import {DashboardOutlined, TableOutlined} from "@ant-design/icons";
-import {Link} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 
 const {Sider} = Layout;
 
@@ -47,24 +47,20 @@ const MenuLink = styled(Link)`
     color: #000;
     font-weight: bold;
   }
+`;
 
-  background: ${({clicked}) => clicked === 'true' ? '#ECECFF' : '#FFFFFF'};
-  border-right: ${({clicked}) => clicked === 'true' ? '2px solid #8F00FF' : 'none'};
+const DashboardMenuLink = styled(MenuLink)`
+  background: ${({to, url}) => to === url || url === `/` ? '#ECECFF' : '#FFFFFF'};
+  border-right: ${({to, url}) => to === url || url === `/` ? '2px solid #8F00FF' : 'none'};
+`;
+
+const StatisticsMenuLink = styled(MenuLink)`
+  background: ${({to, url}) => url === to ? '#ECECFF' : '#FFFFFF'};
+  border-right: ${({to, url}) => url === to ? '2px solid #8F00FF' : 'none'};
 `;
 
 export function SiderBlock() {
-  const [menuItemsSelected, isMenuItemsSelected] = useState({
-    dashboard: true,
-    statistics: false
-  });
-
-  const isMenuItemClick = (isDashboard, isStatistics) => {
-    isMenuItemsSelected({
-      ...menuItemsSelected,
-      dashboard: isDashboard,
-      statistics: isStatistics
-    });
-  }
+  const url = useLocation().pathname;
 
   return (
     <SiderWrapper>
@@ -73,23 +69,21 @@ export function SiderBlock() {
         .Logo
       </Logo>
 
-      <MenuLink
+      <DashboardMenuLink
         to="/Dashboard"
-        clicked={menuItemsSelected.dashboard.toString()}
-        onClick={() => isMenuItemClick(true, false)}
+        url={url}
       >
         <DashboardOutlinedIcon/>
         Dashboard
-      </MenuLink>
+      </DashboardMenuLink>
 
-      <MenuLink
+      <StatisticsMenuLink
         to="/Statistics"
-        clicked={menuItemsSelected.statistics.toString()}
-        onClick={() => isMenuItemClick(false, true)}
+        url={url}
       >
         <TableOutlinedIcon/>
         Statistics
-      </MenuLink>
+      </StatisticsMenuLink>
     </SiderWrapper>
   )
 }
